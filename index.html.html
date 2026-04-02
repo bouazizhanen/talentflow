@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TalentFlow — Connexion</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #07080d;
+  --surface: #0e1018;
+  --surface2: #151720;
+  --border: rgba(255,255,255,0.07);
+  --accent: #00e5a0;
+  --accent2: #5b8fff;
+  --accent3: #ff6b6b;
+  --text: #f0f2f8;
+  --muted: rgba(240,242,248,0.45);
+  --font-head: 'Syne', sans-serif;
+  --font-body: 'Instrument Sans', sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ── AMBIENT ── */
+.ambient {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+}
+.blob {
+  position: absolute; border-radius: 50%;
+  filter: blur(100px); opacity: 0.12;
+  animation: drift 12s ease-in-out infinite;
+}
+.b1 { width:500px;height:500px; background:#5b8fff; top:-150px; left:-100px; animation-delay:0s; }
+.b2 { width:400px;height:400px; background:#00e5a0; bottom:-100px; right:-80px; animation-delay:4s; }
+.b3 { width:300px;height:300px; background:#ff6b6b; top:50%; left:60%; animation-delay:7s; }
+@keyframes drift {
+  0%,100% { transform: translate(0,0) scale(1); }
+  50% { transform: translate(30px,-20px) scale(1.05); }
+}
+
+/* ── SPLIT LAYOUT ── */
+.left-panel {
+  width: 45%;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px;
+  border-right: 1px solid var(--border);
+}
+.right-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── BRANDING ── */
+.brand {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 60px;
+}
+.brand-icon {
+  width: 44px; height: 44px;
+  background: var(--accent);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+}
+.brand-name {
+  font-family: var(--font-head);
+  font-size: 22px; font-weight: 800;
+}
+.brand-sub { font-size: 11px; color: var(--muted); letter-spacing: 1px; }
+
+.hero-title {
+  font-family: var(--font-head);
+  font-size: 42px; font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+.hero-title span { color: var(--accent); }
+.hero-desc {
+  font-size: 15px; color: var(--muted);
+  line-height: 1.7; margin-bottom: 48px;
+  max-width: 380px;
+}
+
+.features { display: flex; flex-direction: column; gap: 16px; }
+.feature-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: all .2s;
+}
+.feature-row:hover { background: rgba(255,255,255,0.05); border-color: rgba(0,229,160,0.15); }
+.feat-icon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.feat-info { }
+.feat-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.feat-desc { font-size: 11px; color: var(--muted); }
+
+/* ── LOGIN CARD ── */
+.login-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 44px 40px;
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  overflow: hidden;
+}
+.login-card::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(0,229,160,0.06), transparent 70%);
+  border-radius: 50%;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 32px;
+}
+.tab {
+  flex: 1; text-align: center;
+  padding: 9px;
+  border-radius: 9px;
+  font-size: 13px; font-weight: 500;
+  cursor: pointer;
+  transition: all .2s;
+  color: var(--muted);
+}
+.tab.active {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+
+/* Forms */
+.form-section { display: none; }
+.form-section.active { display: block; animation: fadeUp .3s ease; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+
+.form-title {
+  font-family: var(--font-head);
+  font-size: 22px; font-weight: 800;
+  margin-bottom: 6px;
+}
+.form-sub { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
+
+.field { margin-bottom: 16px; }
+.field-label {
+  display: flex; justify-content: space-between;
+  font-size: 12px; font-weight: 500;
+  color: var(--muted); margin-bottom: 7px;
+}
+.field-label a { color: var(--accent); cursor: pointer; text-decoration: none; }
+.field-label a:hover { text-decoration: underline; }
+
+.input-wrap { position: relative; }
+.field-input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  padding: 12px 42px 12px 14px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.field-input:focus {
+  border-color: var(--accent2);
+  box-shadow: 0 0 0 3px rgba(91,143,255,0.1);
+}
+.field-input.error { border-color: var(--accent3); box-shadow: 0 0 0 3px rgba(255,107,107,0.1); }
+.field-input.success { border-color: var(--accent); }
+
+.input-icon {
+  position: absolute; right: 14px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px; cursor: pointer;
+  color: var(--muted);
+  transition: color .2s;
+}
+.input-icon:hover { color: var(--text); }
+
+/* Password strength */
+.pw-strength { margin-top: 8px; }
+.pw-bars { display: flex; gap: 4px; margin-bottom: 4px; }
+.pw-bar { flex: 1; height: 3px; background: var(--surface2); border-radius: 3px; transition: background .3s; }
+.pw-bar.weak { background: var(--accent3); }
+.pw-bar.medium { background: var(--accent4); }
+.pw-bar.strong { background: var(--accent); }
+.pw-label { font-size: 11px; color: var(--muted); }
+
+/* Role selector */
+.role-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 8px; margin-bottom: 16px;
+}
+.role-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: all .2s;
+}
+.role-card:hover { border-color: var(--accent2); }
+.role-card.selected { border-color: var(--accent); background: rgba(0,229,160,0.06); }
+.role-icon { font-size: 22px; margin-bottom: 4px; }
+.role-name { font-size: 11px; font-weight: 600; }
+
+/* Submit btn */
+.submit-btn {
+  width: 100%;
+  padding: 13px;
+  border-radius: 12px;
+  border: none;
+  background: var(--accent);
+  color: #07080d;
+  font-family: var(--font-head);
+  font-size: 15px; font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+  margin-top: 8px;
+  position: relative;
+  overflow: hidden;
+}
+.submit-btn:hover { background: #00ffb3; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,229,160,0.25); }
+.submit-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.submit-btn .spinner {
+  display: none;
+  width: 18px; height: 18px;
+  border: 2px solid rgba(0,0,0,0.2);
+  border-top-color: #07080d;
+  border-radius: 50%;
+  animation: spin .6s linear infinite;
+  margin: 0 auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Error / success messages */
+.alert {
+  padding: 11px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-bottom: 14px;
+  display: none;
+  align-items: center; gap: 8px;
+}
+.alert.show { display: flex; animation: fadeUp .2s ease; }
+.alert-error { background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.25); color: #ffaaaa; }
+.alert-success { background: rgba(0,229,160,0.1); border: 1px solid rgba(0,229,160,0.25); color: var(--accent); }
+
+/* Divider */
+.divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 20px 0; color: var(--muted); font-size: 12px;
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+/* Demo accounts */
+.demo-accounts {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-top: 16px;
+}
+.demo-title { font-size: 11px; color: var(--muted); margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.demo-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: all .15s;
+  border-radius: 6px;
+  padding: 7px 8px;
+  margin: 0 -8px;
+}
+.demo-item:hover { background: rgba(255,255,255,0.04); }
+.demo-item:last-child { border-bottom: none; }
+.demo-badge {
+  font-size: 10px; font-weight: 600;
+  padding: 2px 7px; border-radius: 20px;
+}
+.badge-admin { background: rgba(255,107,107,0.15); color: var(--accent3); }
+.badge-rh { background: rgba(0,229,160,0.12); color: var(--accent); }
+.badge-manager { background: rgba(91,143,255,0.12); color: var(--accent2); }
+.demo-creds { font-size: 11px; color: var(--muted); margin-left: auto; }
+.demo-fill { font-size: 10px; color: var(--accent2); margin-left: 4px; }
+
+/* ── DASHBOARD (after login) ── */
+.app-screen {
+  display: none;
+  position: fixed; inset: 0;
+  background: var(--bg);
+  z-index: 100;
+  flex-direction: column;
+}
+.app-screen.active { display: flex; }
+.app-topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 28px;
+  display: flex; align-items: center; gap: 14px;
+}
+.app-topbar .brand-icon { width: 36px; height: 36px; font-size: 18px; }
+.app-topbar .brand-name { font-size: 18px; }
+.user-chip {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 6px 16px 6px 8px;
+}
+.user-chip-av {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: white;
+  background: linear-gradient(135deg, var(--accent2), var(--accent));
+}
+.user-chip-name { font-size: 13px; font-weight: 500; }
+.user-chip-role { font-size: 10px; color: var(--muted); }
+.logout-btn {
+  background: rgba(255,107,107,0.1);
+  border: 1px solid rgba(255,107,107,0.2);
+  color: var(--accent3);
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 12px; font-weight: 500;
+  cursor: pointer;
+  transition: all .2s;
+  font-family: var(--font-body);
+}
+.logout-btn:hover { background: rgba(255,107,107,0.2); }
+
+.app-content {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 24px;
+  padding: 40px;
+}
+.welcome-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 48px;
+  text-align: center;
+  max-width: 560px;
+  width: 100%;
+}
+.welcome-icon { font-size: 56px; margin-bottom: 16px; }
+.welcome-title {
+  font-family: var(--font-head);
+  font-size: 28px; font-weight: 800;
+  margin-bottom: 8px;
+}
+.welcome-title span { color: var(--accent); }
+.welcome-sub { font-size: 14px; color: var(--muted); margin-bottom: 28px; line-height: 1.6; }
+
+.access-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px; margin-bottom: 20px;
+}
+.access-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  cursor: pointer;
+  transition: all .2s;
+  text-align: left;
+}
+.access-card:hover { border-color: var(--accent2); transform: translateY(-2px); }
+.access-icon { font-size: 24px; margin-bottom: 8px; }
+.access-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+.access-desc { font-size: 11px; color: var(--muted); }
+
+.session-info {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(0,229,160,0.06);
+  border: 1px solid rgba(0,229,160,0.15);
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 12px; color: var(--muted);
+  max-width: 560px; width: 100%;
+}
+.session-dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; animation: blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+</style>
+</head>
+<body>
+
+<!-- Ambient -->
+<div class="ambient">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+</div>
+
+<!-- ════════ LOGIN PAGE ════════ -->
+<div class="left-panel" id="login-page-left">
+  <div class="brand">
+    <div class="brand-icon">🎯</div>
+    <div>
+      <div class="brand-name">TalentFlow</div>
+      <div class="brand-sub">RECRUTEMENT À DISTANCE</div>
+    </div>
+  </div>
+
+  <div class="hero-title">Recrutez les<br>meilleurs talents<br>avec <span>l'IA</span></div>
+  <div class="hero-desc">Entretiens automatisés, scoring en temps réel, rapports intelligents. Tout ce dont votre équipe RH a besoin.</div>
+
+  <div class="features">
+    <div class="feature-row">
+      <div class="feat-icon" style="background:rgba(0,229,160,0.1)">🤖</div>
+      <div class="feat-info">
+        <div class="feat-title">Entretiens IA avec Claude</div>
+        <div class="feat-desc">Questions adaptatives, scoring comportemental</div>
+      </div>
+    </div>
+    <div class="feature-row">
+      <div class="feat-icon" style="background:rgba(91,143,255,0.1)">🎥</div>
+      <div class="feat-info">
+        <div class="feat-title">Visioconférence intégrée</div>
+        <div class="feat-desc">Entretiens vidéo sans quitter la plateforme</div>
+      </div>
+    </div>
+    <div class="feature-row">
+      <div class="feat-icon" style="background:rgba(255,209,102,0.1)">📊</div>
+      <div class="feat-info">
+        <div class="feat-title">Tableau de bord RH complet</div>
+        <div class="feat-desc">Pipeline, analytics et rapports automatiques</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ RIGHT — AUTH CARD ════════ -->
+<div class="right-panel" id="login-page-right">
+  <div class="login-card">
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('login')">Connexion</div>
+      <div class="tab" onclick="switchTab('register')">Créer un compte</div>
+    </div>
+
+    <!-- ── LOGIN FORM ── -->
+    <div class="form-section active" id="form-login">
+      <div class="form-title">Bon retour 👋</div>
+      <div class="form-sub">Connectez-vous à votre espace TalentFlow</div>
+
+      <div class="alert alert-error" id="login-error">
+        <span>⚠️</span><span id="login-error-msg">Email ou mot de passe incorrect.</span>
+      </div>
+      <div class="alert alert-success" id="login-success">
+        <span>✅</span><span>Connexion réussie ! Redirection…</span>
+      </div>
+
+      <div class="field">
+        <div class="field-label"><span>Email professionnel</span></div>
+        <div class="input-wrap">
+          <input type="email" class="field-input" id="login-email" placeholder="vous@entreprise.com" onkeydown="if(event.key==='Enter')doLogin()">
+          <span class="input-icon">✉️</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label">
+          <span>Mot de passe</span>
+          <a onclick="showForgot()">Mot de passe oublié ?</a>
+        </div>
+        <div class="input-wrap">
+          <input type="password" class="field-input" id="login-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+          <span class="input-icon" onclick="togglePw('login-password', this)">👁️</span>
+        </div>
+      </div>
+
+      <button class="submit-btn" id="login-btn" onclick="doLogin()">
+        <span id="login-btn-text">Se connecter →</span>
+        <div class="spinner" id="login-spinner"></div>
+      </button>
+
+      <div class="divider">Comptes de démonstration</div>
+
+      <div class="demo-accounts">
+        <div class="demo-title">Cliquez pour remplir automatiquement</div>
+        <div class="demo-item" onclick="fillDemo('admin@talentflow.fr','Admin2026!')">
+          <div class="demo-badge badge-admin">Admin</div>
+          <span style="font-size:12px">Sophie Renaud</span>
+          <span class="demo-creds">admin@talentflow.fr</span>
+          <span class="demo-fill">→ remplir</span>
+        </div>
+        <div class="demo-item" onclick="fillDemo('rh@talentflow.fr','RH2026!')">
+          <div class="demo-badge badge-rh">RH</div>
+          <span style="font-size:12px">Marc Lambert</span>
+          <span class="demo-creds">rh@talentflow.fr</span>
+          <span class="demo-fill">→ remplir</span>
+        </div>
+        <div class="demo-item" onclick="fillDemo('manager@talentflow.fr','Manager2026!')">
+          <div class="demo-badge badge-manager">Manager</div>
+          <span style="font-size:12px">Julie Fabre</span>
+          <span class="demo-creds">manager@talentflow.fr</span>
+          <span class="demo-fill">→ remplir</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── REGISTER FORM ── -->
+    <div class="form-section" id="form-register">
+      <div class="form-title">Créer un compte</div>
+      <div class="form-sub">Rejoignez TalentFlow en quelques secondes</div>
+
+      <div class="alert alert-error" id="reg-error">
+        <span>⚠️</span><span id="reg-error-msg">Une erreur est survenue.</span>
+      </div>
+      <div class="alert alert-success" id="reg-success">
+        <span>✅</span><span>Compte créé ! Connexion en cours…</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="field">
+          <div class="field-label"><span>Prénom</span></div>
+          <div class="input-wrap">
+            <input type="text" class="field-input" id="reg-prenom" placeholder="Sophie">
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label"><span>Nom</span></div>
+          <div class="input-wrap">
+            <input type="text" class="field-input" id="reg-nom" placeholder="Renaud">
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label"><span>Email professionnel</span></div>
+        <div class="input-wrap">
+          <input type="email" class="field-input" id="reg-email" placeholder="vous@entreprise.com">
+          <span class="input-icon">✉️</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label"><span>Mot de passe</span></div>
+        <div class="input-wrap">
+          <input type="password" class="field-input" id="reg-password" placeholder="8 caractères minimum" oninput="checkStrength(this.value)" onkeydown="if(event.key==='Enter')doRegister()">
+          <span class="input-icon" onclick="togglePw('reg-password', this)">👁️</span>
+        </div>
+        <div class="pw-strength" id="pw-strength" style="display:none">
+          <div class="pw-bars">
+            <div class="pw-bar" id="bar1"></div>
+            <div class="pw-bar" id="bar2"></div>
+            <div class="pw-bar" id="bar3"></div>
+            <div class="pw-bar" id="bar4"></div>
+          </div>
+          <div class="pw-label" id="pw-label">Trop court</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label"><span>Rôle</span></div>
+        <div class="role-grid">
+          <div class="role-card selected" onclick="selectRole(this,'DRH / RH')">
+            <div class="role-icon">👩‍💼</div>
+            <div class="role-name">DRH / RH</div>
+          </div>
+          <div class="role-card" onclick="selectRole(this,'Manager')">
+            <div class="role-icon">👨‍💼</div>
+            <div class="role-name">Manager</div>
+          </div>
+          <div class="role-card" onclick="selectRole(this,'Recruteur')">
+            <div class="role-icon">🎯</div>
+            <div class="role-name">Recruteur</div>
+          </div>
+          <div class="role-card" onclick="selectRole(this,'Administrateur')">
+            <div class="role-icon">⚙️</div>
+            <div class="role-name">Admin</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="submit-btn" id="reg-btn" onclick="doRegister()">
+        <span id="reg-btn-text">Créer mon compte →</span>
+        <div class="spinner" id="reg-spinner"></div>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════ APP SCREEN (after login) ════════ -->
+<div class="app-screen" id="app-screen">
+  <div class="app-topbar">
+    <div class="brand-icon">🎯</div>
+    <div class="brand-name">TalentFlow</div>
+    <div style="margin-left:12px;font-size:12px;color:var(--muted)">Recrutement à distance</div>
+
+    <div class="user-chip" style="margin-left:auto">
+      <div class="user-chip-av" id="app-avatar">SR</div>
+      <div>
+        <div class="user-chip-name" id="app-username">Sophie Renaud</div>
+        <div class="user-chip-role" id="app-role">Administrateur</div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">🚪 Déconnexion</button>
+  </div>
+
+  <div class="app-content">
+    <div class="welcome-card">
+      <div class="welcome-icon">🎉</div>
+      <div class="welcome-title">Bienvenue, <span id="app-prenom">Sophie</span> !</div>
+      <div class="welcome-sub">Vous êtes connecté(e) à TalentFlow.<br>Choisissez un module pour commencer.</div>
+
+      <div class="access-grid">
+        <div class="access-card" onclick="openModule('recrutement-app.html')">
+          <div class="access-icon">📊</div>
+          <div class="access-title">Tableau de bord RH</div>
+          <div class="access-desc">Pipeline, candidats, planning</div>
+        </div>
+        <div class="access-card" onclick="openModule('entretien-ia-reel.html')">
+          <div class="access-icon">🤖</div>
+          <div class="access-title">Entretien IA</div>
+          <div class="access-desc">Lancer un entretien avec Claude</div>
+        </div>
+        <div class="access-card" onclick="showToast('🎥 Module vidéo en cours…')">
+          <div class="access-icon">🎥</div>
+          <div class="access-title">Vidéo en direct</div>
+          <div class="access-desc">Visioconférence candidats</div>
+        </div>
+        <div class="access-card" onclick="showToast('📝 Module tests en cours…')">
+          <div class="access-icon">📝</div>
+          <div class="access-title">Tests & Évaluations</div>
+          <div class="access-desc">Envoyer des tests aux candidats</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="session-info">
+      <div class="session-dot"></div>
+      <span>Session active · Connecté(e) en tant que <strong id="sess-role">Administrateur</strong> · <span id="sess-time"></span></span>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" style="position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid var(--accent);border-radius:12px;padding:14px 18px;font-size:13px;box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:9999;transform:translateX(120%);transition:transform .3s ease;display:flex;align-items:center;gap:8px">
+  <span id="toast-text">✅ Action réussie</span>
+</div>
+
+<script>
+// ══════════════════════════
+// USERS DATABASE (localStorage)
+// ══════════════════════════
+
+const DEMO_USERS = [
+  { email: 'admin@talentflow.fr', password: 'Admin2026!', prenom: 'Sophie', nom: 'Renaud', role: 'Administrateur' },
+  { email: 'rh@talentflow.fr',    password: 'RH2026!',    prenom: 'Marc',   nom: 'Lambert', role: 'DRH / RH' },
+  { email: 'manager@talentflow.fr', password: 'Manager2026!', prenom: 'Julie', nom: 'Fabre', role: 'Manager' },
+];
+
+function getUsers() {
+  const stored = localStorage.getItem('tf_users');
+  const custom = stored ? JSON.parse(stored) : [];
+  return [...DEMO_USERS, ...custom];
+}
+
+function saveUser(user) {
+  const stored = localStorage.getItem('tf_users');
+  const custom = stored ? JSON.parse(stored) : [];
+  custom.push(user);
+  localStorage.setItem('tf_users', JSON.stringify(custom));
+}
+
+function saveSession(user) {
+  localStorage.setItem('tf_session', JSON.stringify({ ...user, loginTime: new Date().toISOString() }));
+}
+
+function getSession() {
+  const s = localStorage.getItem('tf_session');
+  return s ? JSON.parse(s) : null;
+}
+
+function clearSession() {
+  localStorage.removeItem('tf_session');
+}
+
+// ══════════════════════════
+// AUTO LOGIN CHECK
+// ══════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  const session = getSession();
+  if (session) enterApp(session);
+  updateSessionTime();
+  setInterval(updateSessionTime, 60000);
+});
+
+// ══════════════════════════
+// TAB SWITCH
+// ══════════════════════════
+let selectedRole = 'DRH / RH';
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', (i===0&&tab==='login')||(i===1&&tab==='register')));
+  document.getElementById('form-login').classList.toggle('active', tab === 'login');
+  document.getElementById('form-register').classList.toggle('active', tab === 'register');
+  hideAlerts();
+}
+
+function selectRole(el, role) {
+  document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedRole = role;
+}
+
+// ══════════════════════════
+// LOGIN
+// ══════════════════════════
+function doLogin() {
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const password = document.getElementById('login-password').value;
+
+  hideAlerts();
+
+  if (!email || !password) {
+    showAlert('login-error', 'Veuillez remplir tous les champs.');
+    return;
+  }
+
+  setLoading('login', true);
+
+  setTimeout(() => {
+    const users = getUsers();
+    const user = users.find(u => u.email.toLowerCase() === email && u.password === password);
+
+    if (user) {
+      showAlert('login-success');
+      saveSession(user);
+      setTimeout(() => enterApp(user), 800);
+    } else {
+      setLoading('login', false);
+      document.getElementById('login-email').classList.add('error');
+      document.getElementById('login-password').classList.add('error');
+      showAlert('login-error', 'Email ou mot de passe incorrect. Essayez un compte démo ci-dessous.');
+    }
+  }, 900);
+}
+
+// ══════════════════════════
+// REGISTER
+// ══════════════════════════
+function doRegister() {
+  const prenom = document.getElementById('reg-prenom').value.trim();
+  const nom = document.getElementById('reg-nom').value.trim();
+  const email = document.getElementById('reg-email').value.trim().toLowerCase();
+  const password = document.getElementById('reg-password').value;
+
+  hideAlerts();
+
+  if (!prenom || !nom || !email || !password) {
+    showAlert('reg-error', 'Veuillez remplir tous les champs.');
+    return;
+  }
+  if (!email.includes('@') || !email.includes('.')) {
+    showAlert('reg-error', 'Adresse email invalide.');
+    return;
+  }
+  if (password.length < 6) {
+    showAlert('reg-error', 'Le mot de passe doit contenir au moins 6 caractères.');
+    return;
+  }
+
+  const users = getUsers();
+  if (users.find(u => u.email.toLowerCase() === email)) {
+    showAlert('reg-error', 'Cet email est déjà utilisé.');
+    return;
+  }
+
+  setLoading('reg', true);
+
+  setTimeout(() => {
+    const newUser = { email, password, prenom, nom, role: selectedRole };
+    saveUser(newUser);
+    saveSession(newUser);
+    showAlert('reg-success');
+    setTimeout(() => enterApp(newUser), 800);
+  }, 900);
+}
+
+// ══════════════════════════
+// ENTER APP
+// ══════════════════════════
+function enterApp(user) {
+  document.getElementById('login-page-left').style.display = 'none';
+  document.getElementById('login-page-right').style.display = 'none';
+  document.getElementById('app-screen').classList.add('active');
+
+  const initials = (user.prenom[0] || '') + (user.nom[0] || '');
+  document.getElementById('app-avatar').textContent = initials.toUpperCase();
+  document.getElementById('app-username').textContent = `${user.prenom} ${user.nom}`;
+  document.getElementById('app-role').textContent = user.role;
+  document.getElementById('app-prenom').textContent = user.prenom;
+  document.getElementById('sess-role').textContent = user.role;
+  updateSessionTime(user.loginTime);
+}
+
+// ══════════════════════════
+// LOGOUT
+// ══════════════════════════
+function doLogout() {
+  clearSession();
+  document.getElementById('app-screen').classList.remove('active');
+  document.getElementById('login-page-left').style.display = 'flex';
+  document.getElementById('login-page-right').style.display = 'flex';
+  document.getElementById('login-email').value = '';
+  document.getElementById('login-password').value = '';
+  document.getElementById('login-email').classList.remove('error','success');
+  document.getElementById('login-password').classList.remove('error','success');
+  hideAlerts();
+  switchTab('login');
+  showToast('👋 Déconnexion réussie');
+}
+
+// ══════════════════════════
+// HELPERS
+// ══════════════════════════
+function fillDemo(email, pw) {
+  document.getElementById('login-email').value = email;
+  document.getElementById('login-password').value = pw;
+  document.getElementById('login-email').classList.remove('error');
+  document.getElementById('login-password').classList.remove('error');
+  showToast('✅ Identifiants remplis — cliquez sur Se connecter');
+}
+
+function togglePw(id, icon) {
+  const inp = document.getElementById(id);
+  const show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  icon.textContent = show ? '🙈' : '👁️';
+}
+
+function checkStrength(val) {
+  const el = document.getElementById('pw-strength');
+  el.style.display = val.length > 0 ? 'block' : 'none';
+  const bars = [document.getElementById('bar1'),document.getElementById('bar2'),document.getElementById('bar3'),document.getElementById('bar4')];
+  bars.forEach(b => b.className = 'pw-bar');
+  const lbl = document.getElementById('pw-label');
+  let score = 0;
+  if (val.length >= 6) score++;
+  if (val.length >= 10) score++;
+  if (/[A-Z]/.test(val) && /[0-9]/.test(val)) score++;
+  if (/[^a-zA-Z0-9]/.test(val)) score++;
+  const classes = ['weak','weak','medium','strong'];
+  const labels = ['Trop court','Faible','Moyen','Fort 💪'];
+  const colors = ['var(--accent3)','var(--accent3)','var(--accent4)','var(--accent)'];
+  for (let i = 0; i < score; i++) bars[i].classList.add(classes[score-1]);
+  lbl.textContent = labels[Math.max(0,score-1)];
+  lbl.style.color = colors[Math.max(0,score-1)];
+}
+
+function showAlert(id, msg) {
+  const el = document.getElementById(id);
+  if (msg && id.includes('error')) {
+    const msgEl = document.getElementById(id + '-msg');
+    if (msgEl) msgEl.textContent = msg;
+  }
+  el.classList.add('show');
+}
+
+function hideAlerts() {
+  document.querySelectorAll('.alert').forEach(a => a.classList.remove('show'));
+  document.querySelectorAll('.field-input').forEach(i => i.classList.remove('error','success'));
+}
+
+function setLoading(form, loading) {
+  const btn = document.getElementById(form + '-btn');
+  const text = document.getElementById(form + '-btn-text');
+  const spinner = document.getElementById(form + '-spinner');
+  btn.disabled = loading;
+  text.style.display = loading ? 'none' : 'block';
+  spinner.style.display = loading ? 'block' : 'none';
+}
+
+function showForgot() {
+  showToast('📧 Un email de réinitialisation vous sera envoyé.');
+}
+
+function openModule(file) {
+  showToast('🚀 Ouverture du module…');
+  setTimeout(() => window.open(file, '_blank'), 600);
+}
+
+function updateSessionTime(loginTime) {
+  const el = document.getElementById('sess-time');
+  if (!el) return;
+  const session = getSession();
+  if (!session) return;
+  const diff = Math.floor((Date.now() - new Date(session.loginTime).getTime()) / 60000);
+  el.textContent = diff < 1 ? 'Connecté(e) à l\'instant' : `Connecté(e) depuis ${diff} min`;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-text').textContent = msg;
+  t.style.transform = 'none';
+  setTimeout(() => t.style.transform = 'translateX(120%)', 3000);
+}
+</script>
+</body>
+</html>
